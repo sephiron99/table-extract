@@ -322,6 +322,13 @@ mod tests {
 </table>
 "#;
 
+    const TABLE_TD_TD_AMPER: &'static str = r#"
+<table>
+    <tr><td>Name</td><td>Age</td></tr>
+    <tr><td>John&John</td><td>20</td></tr>
+</table>
+"#;
+
     const TABLE_TH_TH: &'static str = r#"
 <table>
     <tr><th>Name</th><th>Age</th></tr>
@@ -657,5 +664,16 @@ mod tests {
         assert_eq!(Some("c"), iter.next().map(String::as_str));
         assert_eq!(Some("d"), iter.next().map(String::as_str));
         assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn test_ampersand() {
+        let table = Table::find_first(TABLE_TD_TD_AMPER).unwrap();
+        dbg!(&table);
+        let mut table_iter = table.iter();
+        table_iter.next();
+        let row = table_iter.next().unwrap();
+        let mut iter = row.iter();
+        assert_eq!(Some("John&John"), iter.next().map(String::as_str));
     }
 }
